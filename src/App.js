@@ -21,7 +21,7 @@ function App() {
     image,
     isLoad
   } = useSelector((state) => ({
-    isToken: get(state, 'auth.isToken', false),
+    isToken: state.auth.isToken,
     photos: get(state, 'photos.list', []),
     image: get(state, 'photos.singlePhoto', ''),
     isLoad: get(state, 'isLoading', false)
