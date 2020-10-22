@@ -1,7 +1,7 @@
 import { getToken } from '../api/auth';
 import { isEqual } from 'lodash';
 
-export const TOKEN_REQUEST = 'TOKEN_REQUEST';
+const TOKEN_REQUEST = 'TOKEN_REQUEST';
 
 let token = JSON.parse(localStorage.getItem('REACT_TOKEN_AUTH'));
 const initialState = token ? { isToken: true } : {};
@@ -27,5 +27,7 @@ export const shouldFetchToken = (state, nextValue) => {
 };
 
 export const fetchToken = () => (dispatch) => {
-  return getToken().then(() => dispatch(loadToken()));
+  return getToken().then(() => {
+    dispatch(loadToken())
+  });
 };

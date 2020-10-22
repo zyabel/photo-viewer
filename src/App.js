@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { isEmpty, get } from 'lodash';
 
-import { fetchToken } from './store/auth';
-import { fetchPhotos } from './store/photos';
+import { fetchToken, shouldFetchToken } from './store/auth';
+import { fetchPhotos, fetchSinglePhoto, shouldFetchPhotos } from './store/photos';
 
 import Pagination from '@material-ui/lab/Pagination';
 import Modal from '@material-ui/core/Modal';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ImageCard from './components/ImageCard/ImageCard';
 
 import './App.css';
 
 function App() {
-  const { isToken, photos } = useSelector((state) => ({
-    isToken: state.auth.isToken,
-    photos: state.photos
+  const { 
+    isToken, 
+    photos, 
+    image,
+    isLoad
+  } = useSelector((state) => ({
+    isToken: get(state, 'auth.isToken', false),
+    photos: get(state, 'photos.list', []),
+    image: get(state, 'photos.singlePhoto', ''),
+    isLoad: get(state, 'isLoading', false)
   }));
   const [currentPage, setCurrentPage] = useState(1);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const dispatch = useDispatch();
 
@@ -25,22 +35,45 @@ function App() {
   });
 
   const onPageChanged = (e, value) => {
-    const { page, pageCount } = photos;
     setCurrentPage(value);
-  console.log(value);
-    // axios.get(`/api/countries?page=${currentPage}&limit=${pageLimit}`)
-    //   .then(response => {
-    //     const currentCountries = response.data.countries;
-    //     setCurrentPage(page);
-    //   });
+    dispatch(fetchPhotos(value));
   }
+
+  const openModal = (id) => {
+    dispatch(fetchSinglePhoto(id));
+    setIsOpen(true);
+  }
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  const Card = React.forwardRef((props, ref) => <ImageCard {...props} forwardedRef={ref} />);
 
   return (
     <div className="App">
-      {photos.pictures && photos.pictures.map(({ cropped_picture, id }) => (
-        <img src={cropped_picture} key={id} />
-      ))}
-      <Pagination count={photos.pageCount && photos.pageCount} page={currentPage} onChange={onPageChanged}/>
+      {!isLoad
+        ? <div className="app-wrapper">
+          <div className="image-container">
+            {photos.pictures && photos.pictures.map(({ cropped_picture, id }) => (
+              <figcaption className="image-wrapper"  key={id}>
+                <img className="image-preview" src={cropped_picture} onClick={() => openModal(id)}/>
+              </figcaption>          
+            ))}
+          </div>
+
+          <Pagination count={photos.pageCount && photos.pageCount} page={currentPage} onChange={onPageChanged} className="pagination"/>
+          <Modal
+            open={isOpen}
+            onClose={handleClose}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >            
+            <Card data={image}/>
+          </Modal>
+        </div>
+        : <div className="preloader-wrapper"><CircularProgress /></div>
+      }
     </div>
   );
 }

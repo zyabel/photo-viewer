@@ -1,0 +1,25 @@
+.image-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform:  translate(-50%, -50%);
+}
+
+.card-media {
+  width: 100%;
+}
+
+.card-media-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.card-media-container:hover {
+  cursor: zoom-in;
+}
+
+.react-share__ShareButton:not(:last-child) {
+  margin-right: 10px;
+}

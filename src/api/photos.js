@@ -2,9 +2,17 @@ import { apiInstance } from './config';
 
 const token = JSON.parse(localStorage.getItem('REACT_TOKEN_AUTH'));
 
-export function getPhotos() {
+export function getPhotos(pageNumber) {
+  const params = [];
+
+  if (pageNumber) {
+    params.push(`page=${pageNumber}`);
+  }
+
+  const queryParams = params.length ? `?${params.join('&')}` : '';
+
   return apiInstance
-    .get(`/images`,  {
+    .get(`/images${queryParams}`,  {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -25,7 +33,6 @@ export function getPhoto(id) {
       }
     })
     .then((response) => {
-      console.log(response.data);
       return response.data;
     })
     .catch((error) => {
