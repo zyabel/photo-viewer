@@ -9,6 +9,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import Modal from '@material-ui/core/Modal';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ImageCard from './components/ImageCard/ImageCard';
+import Fade from '@material-ui/core/Fade';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import './App.css';
 
@@ -41,7 +43,9 @@ function App() {
 
   const openModal = (id) => {
     dispatch(fetchSinglePhoto(id));
-    setIsOpen(true);
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 500);
   }
 
   const handleClose = () => {
@@ -68,8 +72,14 @@ function App() {
             onClose={handleClose}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
-          >            
-            <Card data={image}/>
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >          
+            <Fade in={isOpen}>
+              <Card data={image}/>
+            </Fade>  
           </Modal>
         </div>
         : <div className="preloader-wrapper"><CircularProgress /></div>
