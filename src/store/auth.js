@@ -2,9 +2,7 @@ import { getToken } from '../api/auth';
 import { isEqual } from 'lodash';
 
 const TOKEN_REQUEST = 'TOKEN_REQUEST';
-
-let token = JSON.parse(localStorage.getItem('REACT_TOKEN_AUTH'));
-const initialState = token ? { isToken: true } : {};
+const initialState = { isToken: false };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
