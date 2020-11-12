@@ -19,7 +19,7 @@ import './ImageCard.css';
 
 const ImageCard = ({data}) => {
   const {full_picture, author, camera, cropped_picture, tags} = data;
-  console.log(author);
+  console.log(tags, author, camera);
   return (
     <Card className="image-modal" >
       <TransformWrapper>
